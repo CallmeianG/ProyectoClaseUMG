@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <h:form id="frmPrincipal">
+            <h:panelGroup id="tituloP">
+                <p:outputPanel id="tituloprincipal">
+                    <p:outputLabel value="Agregar Persona" style="font-size: 24px;" />
+                </p:outputPanel>
+            </h:panelGroup>
+
+            <h:panelGroup id="grpPrincipal">
+                <p:outputPanel id="pnlPrincipal">
+                    <p:panelGrid id="grdDatos" columns="4">
+                        <p:outputLabel value="Nombre: " />
+                        <p:inputText id="txtNombre" value="#{bkn_indexUI.datosPersonaAgregar.nombre}" />
+                        <p:outputLabel value="Apellido: " />
+                        <p:inputText id="txtApellido" value="#{bkn_indexUI.datosPersonaAgregar.apellido}" />
+                        <p:outputLabel value="Telefono: " />
+                        <p:inputText id="txtTelefono" value="#{bkn_indexUI.datosPersonaAgregar.telefono}" />
+                        <p:outputLabel value="Correo: " />
+                        <p:inputText id="txtCorreo" value="#{bkn_indexUI.datosPersonaAgregar.correo}" />
+                    </p:panelGrid>
+                    <h:panelGrid columns="1" style="text-align:center; margin-top:10px;">
+                        <p:commandButton id="btnAgregarDatos" value="Agregar"
+                                         action="#{bkn_indexUI.agregarPersonaV()}" />
+                    </h:panelGrid>
+                </p:outputPanel>
+            </h:panelGroup>
+
+            <br />
+            <p:fieldset id="flsDatos" legend="Datos Persona" style="font-size: 20px;">
+                <p:dataTable value="#{bkn_indexUI.list}" var="dato">
+                    <p:column headerText="Nombre: " style="padding-right: 20px;">
+                        <p:outputLabel value="#{dato.nombre}" />
+                    </p:column>
+                    <p:column headerText="Apellido: " style="padding-right: 20px;">
+                        <p:outputLabel value="#{dato.apellido}" />
+                    </p:column>
+                    <p:column headerText="Telefono: " style="padding-right: 20px;">
+                        <p:outputLabel value="#{dato.telefono}" />
+                    </p:column>
+                    <p:column headerText="Correo: " style="padding-right: 20px;">
+                        <p:outputLabel value="#{dato.correo}" />
+                    </p:column>
+                    <p:column headerText="Estado: " style="padding-right: 20px;">
+                        <p:outputLabel value="#{dato.estado eq 1 ? 'Activo' : 'Inactivo'}" />
+                    </p:column>
+                    <p:column headerText="Eliminación: " style="padding-right: 20px;">
+                        <p:commandButton id="btnEliminardatos" value="Eliminar"
+                                         action="#{bkn_indexUI.eliminarPersona(dato.idPersona)}"
+                                         update=":frmPrincipal:flsDatos" />
+                    </p:column>
+                    <p:column headerText="Modificación: " style="padding-right: 20px;">
+                        <p:commandButton id="btnModificardatos" value="Modificar"
+                                         oncomplete="PF('dlgModificarDatos').show()"
+                                         actionListener="#{bkn_indexUI.prepararModificacion(dato)}"
+                                         update=":frmPrincipal:formModificarDatos" />
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
+            
+    <p:dialog id="dlgModificarDatos" header="Modificar Datos de: " widgetVar="dlgModificarDatos"
+          modal="true" showEffect="fade" resizable="false" closable="true" width="400px">
+    <h:panelGrid id="formModificarDatos" columns="2" style="margin-top: 20px;">
+        
+       
+        
+        <p:outputLabel for="correo" value="Correo:" />
+        <p:inputText id="correo" value="#{bkn_indexUI.datosPersonaModificar.correo}" />
+
+        <p:outputLabel for="telefono" value="Teléfono:" />
+        <p:inputText id="telefono" value="#{bkn_indexUI.datosPersonaModificar.telefono}" />
+
+        <p:outputLabel value="Estado:" />
+        <p:selectOneMenu id="estado" value="#{bkn_indexUI.datosPersonaModificar.estado}">
+            <f:selectItem itemLabel="Activo" itemValue="1" />
+            <f:selectItem itemLabel="Inactivo" itemValue="0" />
+        </p:selectOneMenu>
+        
+    </h:panelGrid>
+          
+    <h:panelGrid columns="2" style="text-align:center; margin-top:10px;">
+        <p:commandButton value="Guardar" action="#{bkn_indexUI.modificarPersona}"
+                         update=":frmPrincipal:flsDatos" oncomplete="PF('dlgModificarDatos').hide();" />
+    </h:panelGrid>
+</p:dialog>
+
+        </h:form>
+    </h:body>
+</html>
+
