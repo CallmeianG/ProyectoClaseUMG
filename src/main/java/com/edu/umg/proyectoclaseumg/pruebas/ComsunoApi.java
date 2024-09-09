@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;  // Importar la clase Base64
 import org.json.simple.JSONObject;
 
 /**
@@ -15,15 +16,14 @@ import org.json.simple.JSONObject;
  * @author Mayela
  */
 public class ComsunoApi {
-    public static void main(String [] args){
-       try {
+    public static void main(String[] args) {
+        try {
             // URL del WebService
             String url = "http://localhost:8080/WSUMG/resources/WSUMGH/pruebaUMG";
             
             // Crear la conexión
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-         
             con.setRequestMethod("GET");
                       
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -34,9 +34,16 @@ public class ComsunoApi {
                 response.append(inputLine);
             }
             in.close();
-                
-            // Convertir la respuesta a JSON usando json-simple
-            JSONObject jsonResponse = (JSONObject) new org.json.simple.parser.JSONParser().parse(response.toString());
+            
+            // Obtener la respuesta en Base64
+            String base64Response = response.toString();
+            
+            // Decodificar la respuesta Base64 a un String JSON
+            byte[] decodedBytes = Base64.getDecoder().decode(base64Response);
+            String decodedJson = new String(decodedBytes);
+            
+            // Convertir el String JSON decodificado a un objeto JSON
+            JSONObject jsonResponse = (JSONObject) new org.json.simple.parser.JSONParser().parse(decodedJson);
                 
             // Extraer el nombre y el apellido
             String nombre = (String) jsonResponse.get("Nombre");
@@ -49,9 +56,5 @@ public class ComsunoApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
-    
-    
-    
     }
 }
