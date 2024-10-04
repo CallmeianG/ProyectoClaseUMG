@@ -6,7 +6,7 @@ package com.edu.umg.proyectoclaseumg;
 
 //hola
 
-import com.edu.umg.DTO.PersonaDTO;
+import com.edu.umg.DTO.Persona;
 import com.edu.umg.bdd.DMLBdd;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -31,10 +30,10 @@ public class AgregarPersonaUI implements Serializable {
     private String correo;
     private Number estado;
 
-    private PersonaDTO datosPersonaAgregar; // Para agregar
-    private PersonaDTO datosPersonaModificar; // Para modificar
+    private Persona datosPersonaAgregar; // Para agregar
+    private Persona datosPersonaModificar; // Para modificar
 
-    private List<PersonaDTO> list;
+    private List<Persona> list;
     private DMLBdd dml = new DMLBdd();
 
     public AgregarPersonaUI() {
@@ -46,64 +45,42 @@ public class AgregarPersonaUI implements Serializable {
         System.out.println("Iniciando la página...");
 
         // Inicializar instancias separadas
-        datosPersonaAgregar = new PersonaDTO();
-        datosPersonaModificar = new PersonaDTO();
+        datosPersonaAgregar = new Persona();
+        datosPersonaModificar = new Persona();
 
-        try {
-            listarPersonas();
-        } catch (SQLException ex) {
-            Logger.getLogger(AgregarPersonaUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        listarPersonas();
     }
 
-    public void listarPersonas() throws SQLException {
+    public void listarPersonas(){
         System.out.println("Entrando a ver los registros");
 
-        try {
-            list = dml.listaPersona();
-        } catch (SQLException ex) {
-            System.out.println("Error al realizar la consulta: " + ex);
-        }
+        list = dml.getAllPersonas();
     }
 
-    public void eliminarPersona(int idPersona) {
+    public void eliminarPersona(long idPersona) {
         if (idPersona > 0) {
-            try {
-                dml.eliminarPersona(idPersona);
-                listarPersonas(); // Para actualizar la lista después de la eliminación
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Persona eliminada con éxito"));
-            } catch (SQLException ex) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al eliminar la persona"));
-                Logger.getLogger(AgregarPersonaUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            dml.deletePersona(idPersona);
+            listarPersonas(); // Para actualizar la lista después de la eliminación
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Persona eliminada con éxito"));
         }
     }
 
     public void agregarPersonaV() {
-        dml.agrgarPersona(datosPersonaAgregar);
-        try {
-            listarPersonas();
-        } catch (SQLException ex) {
-            System.out.println("Ocurrió un error: " + ex);
-        }
+        dml.addPersona(datosPersonaAgregar);
+        listarPersonas();
 
         // Limpiar los campos después de agregar
-        datosPersonaAgregar = new PersonaDTO();
+        datosPersonaAgregar = new Persona();
     }
 
-    public void prepararModificacion(PersonaDTO persona) {
+    public void prepararModificacion(Persona persona) {
         datosPersonaModificar = persona; // Cargar los datos de la persona seleccionada
     }
 
     public void modificarPersona() throws SQLException {
-        dml.modificarPersona(datosPersonaModificar); // Llama al método para actualizar los datos en la base de datos
-        try {
-            listarPersonas(); // Refresca la lista después de la modificación
-        } catch (SQLException ex) {
-            System.out.println("Ocurrió un error al listar las personas: " + ex);
-        }
+        dml.updatePersona(datosPersonaModificar); // Llama al método para actualizar los datos en la base de datos
+        listarPersonas(); // Refresca la lista después de la modificación
     }
 
     // Getters y setters para cada campo e instancia
@@ -148,27 +125,27 @@ public class AgregarPersonaUI implements Serializable {
         this.estado = estado;
     }
 
-    public PersonaDTO getDatosPersonaAgregar() {
+    public Persona getDatosPersonaAgregar() {
         return datosPersonaAgregar;
     }
 
-    public void setDatosPersonaAgregar(PersonaDTO datosPersonaAgregar) {
+    public void setDatosPersonaAgregar(Persona datosPersonaAgregar) {
         this.datosPersonaAgregar = datosPersonaAgregar;
     }
 
-    public PersonaDTO getDatosPersonaModificar() {
+    public Persona getDatosPersonaModificar() {
         return datosPersonaModificar;
     }
 
-    public void setDatosPersonaModificar(PersonaDTO datosPersonaModificar) {
+    public void setDatosPersonaModificar(Persona datosPersonaModificar) {
         this.datosPersonaModificar = datosPersonaModificar;
     }
 
-    public List<PersonaDTO> getList() {
+    public List<Persona> getList() {
         return list;
     }
 
-    public void setList(List<PersonaDTO> list) {
+    public void setList(List<Persona> list) {
         this.list = list;
     }
 }
