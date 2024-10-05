@@ -12,8 +12,6 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -47,7 +45,8 @@ public class AgregarPersonaUI implements Serializable {
         // Inicializar instancias separadas
         datosPersonaAgregar = new Persona();
         datosPersonaModificar = new Persona();
-
+        
+        //inicializa el listado de las personas 
         listarPersonas();
     }
 
